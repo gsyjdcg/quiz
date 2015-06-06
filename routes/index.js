@@ -9,10 +9,14 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Quiz' });
 });
 
+// Autoload de comandos con :quizId
+
+router.param('quizId', quizController.load);
+
 // Definición de rutas a /quizes
 
-router.get('/quizes', quizController.index);
-router.get('/quizes/:quizId(\\d+)', quizController.show);
+router.get('/quizes',					   quizController.index);
+router.get('/quizes/:quizId(\\d+)', 	   quizController.show);
 router.get('/quizes/:quizId(\\d+)/answer', quizController.answer);
 
 // Ruta a los créditos
