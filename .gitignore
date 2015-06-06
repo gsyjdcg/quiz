@@ -26,6 +26,6 @@ build/Release
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 
-# Excluir de la sincronización de la base de datos
+# Excluir de la sincronización la base de datos sqlite3
 
 quiz.sqlite
