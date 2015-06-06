@@ -18,11 +18,33 @@ exports.load = function(req, res, next, quizId) {
 };
 
 // GET /quizes
+// GET /quizes?search=texto_a_buscar
 
 exports.index = function(req, res) {
-	models.Quiz.findAll().then(function(quizes) {
-		res.render('quizes/index', {quizes: quizes});
-	}).catch(function(error) {next(error);});
+	if (req.query.search) {
+		// delimitar el string contenido en search
+		// con el comodín % antes y después
+		// cambie también los espacios en blanco por %.
+		// De esta forma, si busca "uno dos" ("%uno%dos%"),
+		// mostrará todas las preguntas que tengan "uno"
+		// seguido de "dos", independientemente de lo que
+		// haya entre "uno" y "dos".
+
+		var search = '%' + req.query.search.replace(/\s/g,"%") + '%';
+
+		console.log('PARAMETRO SEARCH = ' + search);
+
+		models.Quiz.findAll(
+			{where: ["pregunta like ?", search],	// Filtrar
+			 order: [['pregunta', 'ASC']]}			// Ordenar
+			).then(function(quizes) {
+			res.render('quizes/index', {quizes: quizes});
+		}).catch(function(error) {next(error);});
+	} else {
+		models.Quiz.findAll().then(function(quizes) {
+			res.render('quizes/index', {quizes: quizes});
+		}).catch(function(error) {next(error);});
+	}
 };
 
 // GET /quizes/:id
