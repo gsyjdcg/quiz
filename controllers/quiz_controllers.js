@@ -146,3 +146,13 @@ exports.update = function(req, res) {
 		});
 	}
 };
+
+// DELETE /quizes/:id
+
+exports.destroy = function(req, res) {
+	req.quiz.destroy().then(function() {
+		// Redirección HTTP a la lista de preguntas
+
+		res.redirect('/quizes');   // URL relativo
+	}).catch(function(error){next(error)});
+};
