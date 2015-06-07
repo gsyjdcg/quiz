@@ -51,24 +51,44 @@ sequelize.sync().then(function() {
 		if (count === 0) {
 			// Inicializar la tabla solo si está vacía
 
+			Quiz.create({pregunta: 'Quién ganó el Giro de Italia en 2015',
+						 respuesta: 'Alberto Contador',
+						 tema: 'ocio'
+						});
+
+			Quiz.create({pregunta: 'Qué es Javascript',
+						 respuesta: 'Un lenguaje de programación',
+						 tema: 'tecnologia'
+						});
+
+			Quiz.create({pregunta: 'Cuantos dientes tiene un perro adulto',
+						 respuesta: '42',
+						 tema: 'ciencia'
+						});
+
 			Quiz.create({pregunta: 'Capital de Italia',
-						 respuesta: 'Roma'
+						 respuesta: 'Roma',
+						 tema: 'humanidades'
 						});
 
 			Quiz.create({pregunta: 'Capital de España',
-						 respuesta: 'Madrid'
+						 respuesta: 'Madrid',
+						 tema: 'humanidades'
 						});
 
 			Quiz.create({pregunta: 'Capital de Marruecos',
-						 respuesta: 'Rabat'
+						 respuesta: 'Rabat',
+						 tema: 'humanidades'
 						});
 
 			Quiz.create({pregunta: 'Capital de Alemania',
-						 respuesta: 'Berlín'
+						 respuesta: 'Berlín',
+						 tema: 'humanidades'
 						});
 
 			Quiz.create({pregunta: 'Capital de Portugal',
-						 respuesta: 'Lisboa'
+						 respuesta: 'Lisboa',
+						 tema: 'humanidades'
 						}).then(function(){
 								console.log('Base de datos inicializada')});
 		}

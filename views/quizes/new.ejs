@@ -1,5 +1,16 @@
 Añadir pregunta: <p>
 
 <form method="post" action="/quizes/create">
+	<label for="tema" class="rem">Temática:</label>
+
+	<select id="tema" name="quiz[tema]">
+ 		<option value="" selected>Temática</option>
+  		<option value="humanidades">Humanidades</option>
+  		<option value="ocio">Ocio</option>
+  		<option value="ciencia">Ciencia</option>
+  		<option value="tecnologia">Tecnología</option>
+	</select>
+	<p>
+
 	<% include form.ejs %>
 </form>
