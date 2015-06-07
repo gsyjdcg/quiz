@@ -32,8 +32,6 @@ exports.index = function(req, res) {
 
 		var search = '%' + req.query.search.replace(/\s/g,"%") + '%';
 
-		console.log('PARAMETRO SEARCH = ' + search);
-
 		models.Quiz.findAll(
 			{where: ["pregunta like ?", search],	// Filtrar
 			 order: [['pregunta', 'ASC']]}			// Ordenar
@@ -102,6 +100,46 @@ exports.create = function(req, res) {
 		// Guarda en la DB los campos pregunta y respuesta de quiz
 
 		quiz.save({fields: ["pregunta", "respuesta"]}).then(function() {
+			// Redirección HTTP a la lista de preguntas
+
+			res.redirect('/quizes');   // URL relativo
+		});
+	}
+};
+
+// GET /quizes/:id/edit
+
+exports.edit = function(req, res) {
+	var quiz = req.quiz; // Autoload ya a cargado la instancia aquí
+
+	res.render('quizes/edit', {quiz: quiz, errors: []});
+};
+
+// PUT /quizes/:id
+
+exports.update = function(req, res) {
+	req.quiz.pregunta = req.body.quiz.pregunta;
+	req.quiz.respuesta = req.body.quiz.respuesta;
+
+	var errors = req.quiz.validate();
+
+	// Comprueba que los datos introducidos son válidos
+
+	if (errors) {
+		var i = 0;
+		var errores = new Array();
+
+		for (var prop in errors) {
+			errores[i++]={message: errors[prop]};
+		}
+
+		// Si no son válidos mostramos un mensaje de error
+
+		res.render('quizes/edit', {quiz: req.quiz, errors: errores});
+	} else {
+		// Guarda en la DB los cambios
+
+		req.quiz.save({fields: ["pregunta", "respuesta"]}).then(function() {
 			// Redirección HTTP a la lista de preguntas
 
 			res.redirect('/quizes');   // URL relativo

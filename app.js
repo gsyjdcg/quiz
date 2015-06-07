@@ -9,6 +9,10 @@ var bodyParser = require('body-parser');
 
 var partials = require('express-partials');
 
+// Importar sobreescritura de metodos delete y put
+
+var methodOverride = require('method-override');
+
 var routes = require('./routes/index');
 
 var app = express();
@@ -27,6 +31,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
