@@ -5,9 +5,28 @@
 	<input type="submit" value="Enviar">
 </form>
 
-<p><a href="/quizes/<%= quiz.id %>/comments/new"><button>Nuevo comentario</button></a></p>
-
+<div><p><a href="/quizes/<%= quiz.id %>/comments/new"><button>Nuevo comentario</button></a></p>
+</div>
+<div>
 <p><strong>Comentarios:</strong></p>
-<%for(index in quiz.comments) {%>
-	<p>- <%=quiz.comments[index].texto%></p>
-<%}%>
+</div>
+
+<% for (index in quiz.comments) { %>
+	<% if (quiz.comments[index].publicado || session.user) { %>
+		<% if (session.user && !quiz.comments[index].publicado) { %>
+
+			<form method="post" action="/quizes/<%= quiz.id %>/comments/<%= quiz.comments[index].id %>/publish?_method=put">
+				<p>- <%= quiz.comments[index].texto %>
+
+				<button type="submit">
+					Aprobar
+				</button>
+			</form>
+
+		<% } else { %>
+				<p>- <%= quiz.comments[index].texto %>
+		<% } %>
+
+		</p>
+	<% } %>
+<% } %>
