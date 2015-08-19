@@ -29,13 +29,26 @@ app.set('view engine', 'ejs');
 
 app.use(partials());
 
-
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
+
 app.use(cookieParser('Quiz-Derick 2015')); // Añadir clave para cifrar COOKIES
-app.use(session()); // Instalar middleware de gestión de sesiones
+
+// Instalar middleware de gestión de sesiones
+
+var sesionAbierta = false;
+
+app.use(session({ 
+            name: 'quiz-derick-2015', // configuración de la cookie
+            secret: 'clavesecreta',
+            resave: true,       // Fuerza a la sesion a volver a salvar la sesion
+            rolling: true,      // Fuerza a la cookie a asignarse en cada respuesta reseteando la fecha de expiración
+            saveUninitialized: false,
+            cookie: {maxAge: 10000}  // Tiempo de expiracion de la sesion
+            })); 
+
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -43,25 +56,41 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Definimos un middleware que tiene dos funciones:
 // 1.- Copiar la session que está en req.session en res.locals.session
 //     para que esté accesible en todas las vistas
-// 2.- Guardar ls ruta de cada solicitud HTTP en la variablee
+// 2.- Guardar ls ruta de cada solicitud HTTP en la variable
 //     session.redir para poder redireccionar a la vista anterior
 //     después de hacer login o logout
 
 app.use(function(req, res, next) {
+  // Resetear req.session.maxAge
+
+  req.session.touch();
+
+  // Hacer visible req.session en las vistas
+
+  res.locals.session = req.session;
 
 	// Guardar path en session.redir para despues de login
 
-	if (!req.path.match(/\/login|\/logout/)) {
+  if (req.method === 'GET' && !req.path.match(/\/login|\/logout/)) {
 		req.session.redir = req.path;
 	}
 
-	// Hacer visible req.session en las vistas
+  // Comprobar si la sesión está abierta
 
-	res.locals.session = req.session;
+    if(req.session.user){
+        sesionAbierta = true;
+        console.log("Sesión ABIERTA");
+    } else{
+        if(sesionAbierta) {
+            sesionAbierta = false;
+            console.log("Sesion CERRADA");
+            var err = new Error('La sesión a finalizado. Vuelva a logearse');
+            err.status = 1001;
+        }
+    }
 
 	next();
 });
-
 
 app.use('/', routes);
 
